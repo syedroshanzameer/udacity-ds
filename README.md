@@ -4,7 +4,7 @@ Based on the classification the disaster agency can route it to the appropriate 
 The project will include a web app where an emergency worker can input a new message and get classification results in several categories. The web app will also display visualizations of the data.
 
 Project Components
-There are three components you'll need to complete for this project.
+There are three components for this project.
 
 1. ETL Pipeline:
 Loads the messages and categories datasets
@@ -21,10 +21,7 @@ Outputs results on the test set
 Exports the final model as a pickle file
 
 3. Flask Web App
-We are providing much of the flask web app for you, but feel free to add extra features depending on your knowledge of flask, html, css and javascript. For this part, you'll need to:
-
-Modify file paths for database and model as needed
-Add data visualizations using Plotly in the web app. 
+Data visualizations using Plotly in the web app. 
 
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
