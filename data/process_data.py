@@ -11,6 +11,11 @@ def load_data(messages_filepath, categories_filepath):
     
 
 def clean_data(df):
+    """This function will clean the data by doing the following:
+    1. Extract column names from Categories column
+    2. Convert categories to binary
+    3. Concatenate with messages dataframe
+    Returns: (DataFrame) """
     # print(df.head())
     categories = df['categories'].str.split(';',expand=True)
 
@@ -32,14 +37,18 @@ def clean_data(df):
         categories[column] = [row[-1] for row in categories[column]]
         # convert column from string to numeric
         categories[column] = [int(row) for row in categories[column]]
+    #related column has 3 values 0,1,2. So removed rows which have value 2
+    categories['related'] = categories['related'][categories['related'] != 2]
+    
     df.drop(['categories'],axis = 1, inplace= True)
     df = pd.concat([df,categories],axis = 1)
     df.drop_duplicates(inplace = True)
     return df
 
 def save_data(df, database_filename):
+    """This function will save the DataFrame to a DB Table"""
     engine = create_engine(f'sqlite:///{database_filename}')
-    df.to_sql('clean_table', engine, index=False)
+    df.to_sql('clean_table', engine, index=False,if_exists='replace')
 
 
 def main():

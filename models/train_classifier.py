@@ -24,7 +24,8 @@ nltk.download('stopwords')
 nltk.download('wordnet')
 
 def load_data(database_filepath): 
-    # load data from database
+    """This function will load the data from database
+    Returns: X , Y """
     engine = create_engine(f'sqlite:///{database_filepath}')
     df = pd.read_sql_table('clean_table', con = engine)
     X = df['message']
@@ -33,6 +34,11 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    """ This function will tokenize the words in each row, remove stop words,
+        lemmatize the word list using WordNetLemmatizer
+        
+        Returns: (str) Clean list of words"""
+
     tokens = word_tokenize(text.lower())
     
     stop_words = set(stopwords.words('english'))
@@ -48,6 +54,13 @@ def tokenize(text):
 
 
 def build_model():
+    """Creating a pipeline using sklearn which will run the following functions in sequence
+    1. CountVectorizer
+    2. TfidTransformer
+    3. RandomForestClassifier
+    Returns: Grid Search Model
+    """
+
     pipeline = Pipeline([
     ('vect',CountVectorizer(tokenizer = tokenize)),
     ('tfidf',TfidfTransformer()),
@@ -56,7 +69,7 @@ def build_model():
 #     X_train,X_test,y_train,y_test = train_test_split(X,y,test_size = .2,random_state = 1)
     
     parameters = {
-        'clf__estimator__n_estimators': [10,20],
+        'clf__estimator__n_estimators': [100,200],
         # 'clf__estimator__min_samples_split': [2, 3, 4],
         'clf__n_jobs': [-1]
     }
@@ -67,12 +80,14 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test):
+    """This function will predict based on X_test"""
     Y_pred = model.predict(X_test)
     for index, column in enumerate(Y_test):
         print(column, classification_report(Y_test[column], Y_pred[:, index]))
 
 
 def save_model(model, model_filepath):
+    """This function will save the model to a pickle file"""
 #     filename = 'model.pkl'
     pickle.dump(model,open(model_filepath,'wb'))
 
